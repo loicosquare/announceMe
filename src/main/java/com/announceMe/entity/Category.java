@@ -30,6 +30,9 @@ public class Category {
     @Column(name="createdAt")
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy="category", fetch = FetchType.LAZY)
+    @Column(name="updatedAt")
+    private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy="category", fetch = FetchType.LAZY) // TODO: Add fetch = FetchType.EAGER To test get category response body
     private List<Announce> announces;
 }
