@@ -2,13 +2,14 @@ package com.announceMe.service;
 
 import com.announceMe.entity.Announce;
 import com.announceMe.entity.Favorite;
+import com.announceMe.entity.HttpResponse;
 
 import java.util.List;
 
 public interface FavoriteService {
-    Favorite addNewFavorite(Favorite favorite);
-    Favorite updateAnnounce(Favorite favorite);
-    Favorite getFavoriteById(int id);
-    void deleteFavorite(Long id);
-    List<Favorite> getAllFavorites();
+    HttpResponse<Favorite> addNewFavorite(Favorite favorite);
+    HttpResponse<Favorite>  updateFavorite(Favorite favorite);
+    HttpResponse<Favorite>  getFavoriteById(Long id);
+    HttpResponse<Favorite>  deleteFavorite(Long id);
+    HttpResponse<Favorite>  getAllFavorites();
 }

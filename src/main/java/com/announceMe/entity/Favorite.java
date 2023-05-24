@@ -22,7 +22,10 @@ public class Favorite {
     private Long id;
 
     @Column(name="createdAt")
-    private Date createdAt;
+    private LocalDateTime createdAt;
+
+    @Column(name="updatedAt")
+    private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name="user_id")

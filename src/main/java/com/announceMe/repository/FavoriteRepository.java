@@ -9,6 +9,5 @@ import java.util.List;
 
 @Repository
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
-    /*public List<Favorite> findAllFavorites();
-    void deleteFavoriteById(Long id);*/
+    Favorite deleteFavoriteById(Long id);
 }
