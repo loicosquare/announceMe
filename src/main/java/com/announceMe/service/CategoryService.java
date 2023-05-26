@@ -10,6 +10,6 @@ public interface CategoryService {
     HttpResponse<Category> addNewCategory(Category category);
     HttpResponse<Category> updateCategory(Category category);
     HttpResponse<Category> getCategoryById(Long id);
-    HttpResponse<Category> deleteCategory(Long id);
+    HttpResponse<Category> deleteCategory(Long id) throws Exception;
     HttpResponse<Category> getAllCategories();
 }

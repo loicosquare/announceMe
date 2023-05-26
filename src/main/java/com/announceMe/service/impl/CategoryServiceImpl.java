@@ -44,20 +44,22 @@ public class CategoryServiceImpl implements CategoryService {
     public HttpResponse<Category> updateCategory(Category category) {
         Optional<Category> optionalCategory = Optional.of(categoryRepository.findById(category.getId()))
                 .orElseThrow(() -> new RuntimeException("Category not found"));
-        log.info("Updating category in database");
-        Category updatedCategory = optionalCategory.get();
-        updatedCategory.setId(updatedCategory.getId());
-        updatedCategory.setLabel(category.getLabel());
-        updatedCategory.setDescription(category.getDescription());
-        updatedCategory.setUpdatedAt(LocalDateTime.now());
-        categoryRepository.save(updatedCategory);
-        return HttpResponse.<Category>builder()
-                .data(Collections.singleton(updatedCategory))
-                .message("Category updated successfully")
-                .status(HttpStatus.OK)
-                .statusCode(HttpStatus.OK.value())
-                //.timeStamp()
-                .build();
+        if (optionalCategory.isPresent()) {
+            Category updatedCategory = optionalCategory.get();
+            updatedCategory.setLabel(category.getLabel());
+            updatedCategory.setDescription(category.getDescription());
+            updatedCategory.setUpdatedAt(LocalDateTime.now());
+            categoryRepository.save(updatedCategory);
+            return HttpResponse.<Category>builder()
+                    .data(Collections.singleton(updatedCategory))
+                    .message("Category updated successfully")
+                    .status(HttpStatus.OK)
+                    .statusCode(HttpStatus.OK.value())
+                    //.timeStamp()
+                    .build();
+        } else {
+            throw new RuntimeException("Category not found");
+        }
     }
 
     @Override
@@ -65,31 +67,38 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("Fetching category from database by id {}", id);
         Optional<Category> optionalCategory = Optional.of(categoryRepository.findById(id))
                 .orElseThrow(() -> new RuntimeException("Category not found"));
-        return HttpResponse.<Category>builder()
-                .data(Collections.singleton(optionalCategory.get()))
-                .message("Category retrieved successfully")
-                .status(HttpStatus.OK)
-                .statusCode(HttpStatus.OK.value())
-                //.timeStamp()
-                .build();
+        if(optionalCategory.isPresent()){
+            return HttpResponse.<Category>builder()
+                    .data(Collections.singleton(optionalCategory.get()))
+                    .message("Category retrieved successfully")
+                    .status(HttpStatus.OK)
+                    .statusCode(HttpStatus.OK.value())
+                    //.timeStamp()
+                    .build();
+
+        }else{
+            throw new RuntimeException("Category not found");
+        }
     }
 
     @Override
-    public HttpResponse<Category> deleteCategory(Long id) {
+    public HttpResponse<Category> deleteCategory(Long id) throws Exception {
         log.info("Deleting category from database by id {}", id);
         Optional<Category> optionalCategory = Optional.of(categoryRepository.findById(id))
                 .orElseThrow(() -> new RuntimeException("Category not found"));
         /*if(optionalCategory.isPresent()){
             categoryRepository.deleteById(optionalCategory.get().getId());
         }*/
-        optionalCategory.ifPresent(categoryRepository::delete);
-        return HttpResponse.<Category>builder()
-                .data(Collections.singleton(optionalCategory.get()))
-                .message("Category updated successfully")
-                .status(HttpStatus.OK)
-                .statusCode(HttpStatus.OK.value())
-                //.timeStamp()
-                .build();
+        if (optionalCategory.isPresent()) {
+            optionalCategory.ifPresent(categoryRepository::delete); //Double check here is not necessary
+            return HttpResponse.<Category>builder()
+                    .data(Collections.singleton(optionalCategory.get()))
+                    .message("Category updated successfully")
+                    //.timeStamp()
+                    .build();
+        }else{
+            throw new Exception("Category not found");
+        }
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.announceMe.service;
 import com.announceMe.auth.AuthenticationRequest;
 import com.announceMe.auth.AuthenticationResponse;
 import com.announceMe.auth.RegisterRequest;
+import com.announceMe.entity.Role;
 import com.announceMe.entity.User;
 import com.announceMe.repository.TokenRepository;
 import com.announceMe.repository.UserRepository;
@@ -10,6 +11,7 @@ import com.announceMe.token.Token;
 import com.announceMe.token.TokenType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +24,7 @@ import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationService {
     private final UserRepository repository;
     private final TokenRepository tokenRepository;
@@ -35,12 +38,14 @@ public class AuthenticationService {
                 .lastname(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
+                //.role(request.getRole())
+                .role(Role.USER)
                 .build();
         var savedUser = repository.save(user);
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         saveUserToken(savedUser, jwtToken);
+        //TODO : verify if the token already exists then throw an exception saying that the token already exists.
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
@@ -48,14 +53,17 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        //log.info("Authenticating user {}", request);
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 )
         );
+        log.info("Enter .................");
         var user = repository.findByEmail(request.getEmail())
-                .orElseThrow();
+                .orElseThrow(()-> new IllegalArgumentException("User not found"));
+        log.info("Fetched user {}", user);
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user); //To do not allow multiples tokens with expired and revoked to true in the token table. we revoke all tokens and set the expired and revoke to true before saving the new token. for example if we submit authentication request more times.
@@ -78,7 +86,7 @@ public class AuthenticationService {
     }
 
     private void revokeAllUserTokens(User user) {
-        var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId().intValue()); //I'm converting to int because the id is of type Long into the user class.
+        var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId()/*.intValue()*/); //I'm converting to int because the id is of type Long into the user class.
         if (validUserTokens.isEmpty())
             return;
         validUserTokens.forEach(token -> {

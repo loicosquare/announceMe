@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Integer> {
     /*public List<User> findAllUsers();
     void deleteUserById(Long id);*/
     Optional<User> findByEmail(String email);

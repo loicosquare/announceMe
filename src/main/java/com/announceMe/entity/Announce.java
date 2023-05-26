@@ -20,7 +20,7 @@ public class Announce {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id")
-    private Long id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name="category_id", referencedColumnName="id")
