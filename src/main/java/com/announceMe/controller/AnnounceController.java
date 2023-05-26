@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/announces")
+@RequestMapping("/announce")
 public class AnnounceController {
     private final AnnounceService announceService;
 
@@ -70,7 +70,7 @@ public class AnnounceController {
     @PreAuthorize("hasAnyAuthority('admin:update') or hasRole('ADMIN')")
     public ResponseEntity<HttpResponse<Announce>> validateAnnounce(@PathVariable("id") int id, @RequestBody Announce announce) {
         try {
-            announce.setId(id);
+            //announce.setId(id);
             HttpResponse<Announce> response = announceService.validateAnnounce(announce);
             return new ResponseEntity<>(response, response.getStatus());
         } catch (Exception e) {
