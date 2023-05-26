@@ -50,7 +50,8 @@ public class SecurityConfiguration {
                         new AntPathRequestMatcher("/configuration/security"),
                         new AntPathRequestMatcher("/swagger-ui/**"),
                         new AntPathRequestMatcher("/webjars/**"),
-                        new AntPathRequestMatcher("/swagger-ui.html")
+                        new AntPathRequestMatcher("/swagger-ui.html"),
+                        new AntPathRequestMatcher("/category/all")
                 )
                 .permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/api/v1/management/**")).hasAnyRole(ADMIN.name(), MANAGER.name())
