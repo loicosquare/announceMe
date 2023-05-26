@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 public class AnnounceController {
     private final AnnounceService announceService;
 
-    @PostMapping
-    @PreAuthorize("hasAnyAuthority('management:create', 'admin:create')")
+    @PostMapping("/create")
+    @PreAuthorize("hasAnyAuthority('management:create', 'admin:create') or hasRole('ADMIN')")
     public ResponseEntity<HttpResponse<Announce>> addNewAnnounce(@RequestBody Announce announce, @RequestParam Long idCategory) {
         try {
             HttpResponse<Announce> response = announceService.addNewAnnounce(announce, idCategory);
@@ -28,7 +28,7 @@ public class AnnounceController {
 
     //@PutMapping("/{id}")
     @PutMapping("/update")
-    @PreAuthorize("hasAnyAuthority('admin:update')")
+    @PreAuthorize("hasAnyAuthority('admin:update') or hasRole('ADMIN')")
     public ResponseEntity<HttpResponse<Announce>> updateAnnounce(/*@PathVariable("id") int id, */@RequestBody Announce announce) {
         try {
             //announce.setId(id);
@@ -49,8 +49,8 @@ public class AnnounceController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('admin:delete')")
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyAuthority('admin:delete') or hasRole('ADMIN')")
     public ResponseEntity<HttpResponse<Announce>> deleteAnnounce(@PathVariable("id") int id) {
         try {
             HttpResponse<Announce> response = announceService.deleteAnnounce(id);
@@ -60,14 +60,14 @@ public class AnnounceController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<HttpResponse<Announce>> getAllAnnounces() {
         HttpResponse<Announce> response = announceService.getAllAnnounces();
         return new ResponseEntity<>(response, response.getStatus());
     }
 
     @PostMapping("/{id}/validate")
-    @PreAuthorize("hasAnyAuthority('admin:update')")
+    @PreAuthorize("hasAnyAuthority('admin:update') or hasRole('ADMIN')")
     public ResponseEntity<HttpResponse<Announce>> validateAnnounce(@PathVariable("id") int id, @RequestBody Announce announce) {
         try {
             announce.setId(id);
