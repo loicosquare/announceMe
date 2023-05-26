@@ -7,7 +7,7 @@ import com.announceMe.entity.HttpResponse;
 import java.util.List;
 
 public interface AnnounceService {
-    HttpResponse<Announce> addNewAnnounce(Announce announce, Category category) throws Exception;
+    HttpResponse<Announce> addNewAnnounce(Announce announce, Long idCategory) throws Exception;
     HttpResponse<Announce> updateAnnounce(Announce announce) throws Exception;
     HttpResponse<Announce> getAnnounceById(int id) throws Exception;
     HttpResponse<Announce> deleteAnnounce(int id) throws Exception;

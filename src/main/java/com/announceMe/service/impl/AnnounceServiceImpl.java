@@ -6,7 +6,6 @@ import com.announceMe.repository.CategoryRepository;
 import com.announceMe.service.AnnounceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,8 +13,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,9 +26,9 @@ public class AnnounceServiceImpl implements AnnounceService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public HttpResponse<Announce> addNewAnnounce(Announce announce, Category category) throws Exception {
+    public HttpResponse<Announce> addNewAnnounce(Announce announce, Long idCategory) throws Exception {
         // Check if the category exists
-        Optional<Category> optionalCategory = categoryRepository.findById(category.getId());
+        Optional<Category> optionalCategory = categoryRepository.findById(idCategory);
         if (optionalCategory.isEmpty()) {
             throw new Exception("The category does not exist");
         }
